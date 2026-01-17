@@ -5,118 +5,184 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paramount Bumper Animation</title>
     <style>
+        /* 1. Reset and Layout */
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle at center, #578bc9 0%, #002d5a 100%);
+            /* Sunset sky to Lake reflection gradient */
+            background: linear-gradient(to bottom, 
+                #0b1026 0%, 
+                #2b3266 30%, 
+                #d98e5e 50%, 
+                #3e5285 50%, 
+                #000000 100%);
             font-family: 'Arial', sans-serif;
             overflow: hidden;
         }
 
+        /* 2. Container */
         .bumper-container {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            height: 100%;
+            perspective: 800px; /* Adds depth for the 3D flying effect */
         }
 
+        /* 3. The Logo Group */
         .logo-box {
-            width: 200px;
-            height: 200px;
-            background: transparent;
+            width: 300px;
+            height: 300px;
+            position: relative;
             display: flex;
             justify-content: center;
-            align-items: flex-end; 
-            position: relative;
-            
+            align-items: center;
+            /* Initial State for Logo Box */
             opacity: 0;
-            transform: scale(0.5);
-            
-            animation: logoEntrance 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: sceneFadeIn 1s ease-out forwards;
         }
 
-        /* The Mountain */
+        /* The Mountain (Main Peak) */
         .logo-box::before {
             content: '';
             position: absolute;
-            bottom: 20px;
-            width: 120px;
-            height: 100px;
-            background: linear-gradient(to bottom, #fff 0%, #b4d2ff 100%);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            bottom: 80px; /* Sit on the "horizon" */
+            width: 0; 
+            height: 0; 
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 120px solid #cfdce8; /* Base mountain color */
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
             z-index: 2;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            transform-origin: bottom;
+            animation: mountainRise 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
-        /* The Stars (Ring) */
+        /* The Mountain (Shadow/Detail) - Creates the 3D look */
         .logo-box::after {
             content: '';
             position: absolute;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border-top: 5px dotted #fff; 
-            border-right: 5px dotted transparent; 
-            border-left: 5px dotted #fff;
-            border-bottom: 5px dotted transparent;
-            transform: rotate(-45deg);
+            bottom: 80px;
+            width: 0; 
+            height: 0; 
+            border-left: 40px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 120px solid rgba(0,0,0,0.2); /* Shadow side */
             z-index: 3;
-            animation: starSpin 3s ease-out forwards;
+            transform-origin: bottom;
+            animation: mountainRise 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
-        .logo-text {
-            margin-top: 0px;
-            color: #fff;
-            font-family: 'Edwardian Script ITC', 'Brush Script MT', cursive;
-            font-size: 60px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            overflow: hidden; 
-            white-space: nowrap;
-            position: relative;
+        /* The Stars (Ring) */
+        /* We simulate 22 stars using a dotted border on a large circle */
+        .stars-ring {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            /* The stars are created by the border */
+            border: 6px dotted transparent; 
+            border-top-color: #fff;  /* Visible part of arc */
+            border-right-color: #fff; 
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            
+            top: -20px; /* Adjust vertical position of arc */
             z-index: 4;
+            opacity: 0;
+            
+            /* Animation: Fly in from camera (scale down) and rotate */
+            animation: starsFlyIn 3s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        /* 4. The Text */
+        .logo-text {
+            position: absolute;
+            bottom: 25%; /* Position over the mountain base */
+            z-index: 10;
+            text-align: center;
         }
 
         .logo-text span {
             display: block;
-            transform: translateY(100%);
-            animation: textSlideUp 1s ease-out 1s forwards; 
+            font-family: 'Edwardian Script ITC', 'Brush Script MT', cursive;
+            font-size: 80px;
+            color: #fff;
+            /* Gold/Metallic Gradient Text Effect */
+            background: linear-gradient(to bottom, #fff 0%, #e6c88e 50%, #916f28 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            
+            /* Start huge and invisible (fly in effect) */
+            transform: scale(3);
+            opacity: 0;
+            animation: textZoomIn 2s ease-out 1s forwards;
+        }
+        
+        /* Optional: The "A Viacom Company" subtitle */
+        .logo-text::after {
+            content: 'A Viacom Company';
+            display: block;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            color: #ccc;
+            opacity: 0;
+            animation: fadeSubtitle 1s ease-out 2.5s forwards;
+            -webkit-text-fill-color: #ccc; /* Override gradient */
         }
 
-        @keyframes logoEntrance {
+        /* 5. Keyframe Animations */
+
+        @keyframes sceneFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes mountainRise {
+            0% { transform: scaleY(0.5); }
+            100% { transform: scaleY(1); }
+        }
+
+        /* Simulates stars coming from behind/sides of camera */
+        @keyframes starsFlyIn {
             0% {
                 opacity: 0;
-                transform: scale(0.8) translateY(50px);
+                transform: scale(3) rotate(60deg) translateZ(500px);
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.9;
+                transform: scale(1) rotate(-20deg) translateZ(0);
+                filter: drop-shadow(0 0 5px #fff);
+            }
+        }
+
+        @keyframes textZoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(2) translateY(50px);
             }
             100% {
                 opacity: 1;
                 transform: scale(1) translateY(0);
             }
         }
-
-        @keyframes starSpin {
-            0% {
-                opacity: 0;
-                transform: rotate(120deg) scale(1.5);
-            }
-            100% {
-                opacity: 1;
-                transform: rotate(-45deg) scale(1);
-            }
-        }
-
-        @keyframes textSlideUp {
-            0% {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        
+        @keyframes fadeSubtitle {
+            to { opacity: 1; }
         }
 
     </style>
@@ -125,7 +191,8 @@
 
     <div class="bumper-container">
         <div class="logo-box">
-            </div>
+            <div class="stars-ring"></div>
+        </div>
         
         <div class="logo-text">
             <span>Paramount</span>
