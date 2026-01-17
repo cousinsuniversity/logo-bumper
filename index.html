@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Bumper Animation</title>
+    <title>Paramount Bumper Animation</title>
     <style>
-        /* 1. Reset and Layout */
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #1a1a1a; /* Dark background */
+            background: radial-gradient(circle at center, #578bc9 0%, #002d5a 100%);
             font-family: 'Arial', sans-serif;
             overflow: hidden;
         }
 
-        /* 2. Container for the Bumper */
         .bumper-container {
             position: relative;
             display: flex;
@@ -26,66 +24,90 @@
             justify-content: center;
         }
 
-        /* 3. The Logo Circle */
         .logo-box {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            background: transparent;
             display: flex;
             justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(110, 142, 251, 0.5);
+            align-items: flex-end; 
+            position: relative;
             
-            /* Initial State */
             opacity: 0;
             transform: scale(0.5);
             
-            /* Animation Trigger */
-            animation: logoEntrance 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: logoEntrance 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* 4. The Text Reveal */
+        /* The Mountain */
+        .logo-box::before {
+            content: '';
+            position: absolute;
+            bottom: 20px;
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(to bottom, #fff 0%, #b4d2ff 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* The Stars (Ring) */
+        .logo-box::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border-top: 5px dotted #fff; 
+            border-right: 5px dotted transparent; 
+            border-left: 5px dotted #fff;
+            border-bottom: 5px dotted transparent;
+            transform: rotate(-45deg);
+            z-index: 3;
+            animation: starSpin 3s ease-out forwards;
+        }
+
         .logo-text {
-            margin-top: 20px;
+            margin-top: 0px;
             color: #fff;
-            font-size: 24px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            overflow: hidden; /* Hides text while it slides up */
+            font-family: 'Edwardian Script ITC', 'Brush Script MT', cursive;
+            font-size: 60px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            overflow: hidden; 
             white-space: nowrap;
             position: relative;
+            z-index: 4;
         }
 
         .logo-text span {
             display: block;
             transform: translateY(100%);
-            animation: textSlideUp 0.8s ease-out 0.8s forwards; /* Delay starts after logo entrance */
+            animation: textSlideUp 1s ease-out 1s forwards; 
         }
 
-        /* 5. Keyframe Animations */
-        
-        /* Logo Pops in and Scales */
         @keyframes logoEntrance {
             0% {
                 opacity: 0;
-                transform: scale(0);
-            }
-            60% {
-                opacity: 1;
-                transform: scale(1.1); /* Slight overshoot */
+                transform: scale(0.8) translateY(50px);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
-                box-shadow: 0 0 30px rgba(167, 119, 227, 0.6);
+                transform: scale(1) translateY(0);
             }
         }
 
-        /* Text Slides Up from invisible overflow */
+        @keyframes starSpin {
+            0% {
+                opacity: 0;
+                transform: rotate(120deg) scale(1.5);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(-45deg) scale(1);
+            }
+        }
+
         @keyframes textSlideUp {
             0% {
                 transform: translateY(100%);
@@ -97,32 +119,18 @@
             }
         }
 
-        /* Optional: Adding a continuous pulse after entrance */
-        .logo-box {
-            animation: logoEntrance 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
-                       pulseGlow 2s infinite 2s; /* Starts after entrance finishes */
-        }
-
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 20px rgba(110, 142, 251, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(167, 119, 227, 0.8); }
-            100% { box-shadow: 0 0 20px rgba(110, 142, 251, 0.5); }
-        }
-
     </style>
 </head>
 <body>
 
     <div class="bumper-container">
         <div class="logo-box">
-            A
-        </div>
+            </div>
         
         <div class="logo-text">
-            <span>Alpha Corp</span>
+            <span>Paramount</span>
         </div>
     </div>
 
 </body>
 </html>
-
